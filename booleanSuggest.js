@@ -46,10 +46,8 @@ var PrimoBooleanSuggest = function (options){
   var suggest = function(){
     var params = getPageParams();
     var dscnt = params.dscnt;
-    //var rfnId = params.rfnId;
-    //var pag = params.pag;
-    var rfnId = "";
-    var pag = "";
+    var rfnId = params.rfnId;
+    var pag = params.pag;
 
     // Try to only show Boolean Suggest if this is the first page of a new search
     if (dscnt < 1 && (pag != "prv" && pag != "nxt") && rfnId != "rfin0"){
