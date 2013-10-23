@@ -50,7 +50,9 @@ var PrimoBooleanSuggest = function (options){
     var pag = params.pag;
 
     // Try to only show Boolean Suggest if this is the first page of a new search
-    if (dscnt < 1 && (pag != "prv" && pag != "nxt") && rfnId != "rfin0"){
+    if ((typeof dscnt == 'undefined' || dscnt < 1) &&
+        (typeof pag == 'undefined' || (pag != "prv" && pag != "nxt")) &&
+        (typeof rfnId == 'undefined' ||  rfnId != "rfin0")){
       var foundTitleChar = false;
       var foundTitleWord = false;
       var foundBool = false;
