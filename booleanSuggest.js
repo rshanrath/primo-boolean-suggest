@@ -94,7 +94,7 @@ var PrimoBooleanSuggest = function (options){
 
         var newSearchURL = window.location.pathname + '?' + encodeURI(newPairs.join("&"));
         var newSearchText = reformat.join(' ');
-        var suggestContainer = '<div class="boolhelp">+If you want to use Boolean operators like "and," "or," and "not", you\'ll need to capitalize them.' +
+        var suggestContainer = '<div class="boolhelp">To use Boolean operators like "and," "or," and "not", you\'ll need to capitalize them.' +
                                ' Try this search: <a id="' + settings.suggestLinkId + '" href="' + newSearchURL + '">' + newSearchText + '</a>.</div>';
         $(settings.afterSelector).after(suggestContainer);
       }
