@@ -87,7 +87,7 @@ var PrimoBooleanSuggest = function (options){
           if (key == 'vl(freeText0)'){
             newPairs.push(key + "=" + reformat.join(' '));
           }else if (key == 'query'){
-            var qPieces = key.split(",");
+            var qPieces = params[key].split(",");
             newPairs.push(key + "=" + qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
           }else{
             newPairs.push(key + "=" + params[key]);
