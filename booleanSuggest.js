@@ -21,6 +21,7 @@ var PrimoBooleanSuggest = function (options){
         return true;
       }
     }
+    return false;
   }
 
   var isPageSuggestable = function(){
@@ -53,13 +54,11 @@ var PrimoBooleanSuggest = function (options){
     if ((typeof dscnt == 'undefined' || dscnt < 1) &&
         (typeof pag == 'undefined' || (pag != "prv" && pag != "nxt")) &&
         (typeof rfnId == 'undefined' ||  rfnId != "rfin0")){
-      var foundTitleChar = false;
+      var searchQuery = getSearchQuery();
+
       var foundTitleWord = false;
       var foundBool = false;
-
-      var searchQuery = getSearchQuery();
-      
-      foundTitleChar = hasTitleChars(searchQuery);
+      var foundTitleChar = hasTitleChars(searchQuery);
 
       var results = searchQuery.match(/("[^"]+"|[^"\s]+)/g);
       var reformat = [];
