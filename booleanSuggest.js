@@ -25,8 +25,9 @@ var PrimoBooleanSuggest = function (options){
   }
 
   var isPageSuggestable = function(){
-    // Only display Booelan Suggest if there isn't already another system feedback box (e.g. for DYM)
-    if ($('.EXLSystemFeedback strong').length > 0){
+    // Only display Booelan Suggest if the page contains results and if 
+    // there isn't already another system feedback box (e.g. for DYM)
+    if ($('#exlidResultsContainer').length < 1 || $('.EXLSystemFeedback strong').length > 0){
       return false;
     }
     return true;
