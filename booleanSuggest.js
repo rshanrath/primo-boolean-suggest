@@ -24,15 +24,6 @@ var PrimoBooleanSuggest = function (options){
     return false;
   }
 
-  var isPageSuggestable = function(){
-    // Only display Booelan Suggest if the page contains results and if 
-    // there isn't already another system feedback box (e.g. for DYM)
-    if ($('#exlidResultsContainer').length < 1 || $('.EXLSystemFeedback strong').length > 0){
-      return false;
-    }
-    return true;
-  }
-
   var getPageParams = function(){
     var params = {};
     var qs = window.location.search;
@@ -45,62 +36,78 @@ var PrimoBooleanSuggest = function (options){
     return params;
   }
 
-  var suggest = function(){
+  var isPageSuggestable = function(){
+    // Only display Booelan Suggest if the page contains results,
+    //  if there isn't already another system feedback box (e.g. for DYM),
+    //  if there are no facets selected
+    if ($('#exlidResultsContainer').length < 1 || 
+       $('.EXLSystemFeedback strong').length > 0 ||
+       $('.EXLRefinementsList').length > 0){
+      return false;
+    }
     var params = getPageParams();
     var dscnt = params.dscnt;
     var rfnId = params.rfnId;
     var pag = params.pag;
 
     // Try to only show Boolean Suggest if this is the first page of a new search
-    if ((typeof dscnt == 'undefined' || dscnt < 1) &&
-        (typeof pag == 'undefined' || (pag != "prv" && pag != "nxt")) &&
-        (typeof rfnId == 'undefined' ||  rfnId != "rfin0")){
-      var searchQuery = getSearchQuery();
+    if (! (typeof dscnt == 'undefined' || dscnt < 1) ||
+        ! (typeof pag == 'undefined' || (pag != "prv" && pag != "nxt")) ||
+        ! (typeof rfnId == 'undefined' ||  rfnId != "rfin0")){
+      return false;
+    }
+    return true;
+  }
 
-      var foundTitleWord = false;
-      var foundBool = false;
-      var foundTitleChar = hasTitleChars(searchQuery);
+  var suggest = function(){
+    var params = getPageParams();
 
-      var results = searchQuery.match(/("[^"]+"|[^"\s]+)/g);
-      var reformat = [];
+    var searchQuery = getSearchQuery();
 
-      for (var i = 0; i < results.length; i++){
-        if (results[i].indexOf('""') > -1){
-          reformat[i] = results[i];
+    var foundTitleWord = false;
+    var foundBool = false;
+    var foundTitleChar = hasTitleChars(searchQuery);
+
+    var results = searchQuery.match(/("[^"]+"|[^"\s]+)/g);
+    var reformat = [];
+
+    for (var i = 0; i < results.length; i++){
+      if (results[i].indexOf('""') > -1){
+        reformat[i] = results[i];
+      }else{
+        if (results[i] == "or" || results[i] == "not" || results[i] == "and"){
+          reformat[i] = results[i].toUpperCase();
+          foundBool = true;
         }else{
-          if (results[i] == "or" || results[i] == "not" || results[i] == "and"){
-            reformat[i] = results[i].toUpperCase();
-            foundBool = true;
-          }else{
-            if ($.inArray(results[i], settings.titleWords) >= 0){
-              foundTitleWord = true;
-            }
-
-            reformat[i] = results[i];
+          if ($.inArray(results[i], settings.titleWords) >= 0){
+            foundTitleWord = true;
           }
+
+          reformat[i] = results[i];
         }
       }
+    }
 
-      if (foundBool && ! foundTitleChar && ! foundTitleWord){
-        var newPairs = new Array();
-        for (var key in params){
-          if (key == 'vl(freeText0)'){
-            newPairs.push(key + "=" + reformat.join(' '));
-          }else if (key == 'query'){
-            var qPieces = params[key].split(",");
-            newPairs.push(key + "=" + qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
-          }else{
-            newPairs.push(key + "=" + params[key]);
-          }          
-        } 
+    if (foundBool && ! foundTitleChar && ! foundTitleWord){
+      var newPairs = new Array();
+      for (var key in params){
+        if (key == 'vl(freeText0)'){
+          newPairs.push(key + "=" + reformat.join(' '));
+        }else if (key == 'query'){
+          var qPieces = params[key].split(",");
+          newPairs.push(key + "=" + qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
+        }else{
+          newPairs.push(key + "=" + params[key]);
+        }          
+      } 
 
-        var newSearchURL = window.location.pathname + '?' + encodeURI(newPairs.join("&"));
-        var newSearchText = reformat.join(' ');
-        var suggestContainer = '<div class="boolhelp">To use Boolean operators like "and," "or," and "not", you\'ll need to capitalize them.' +
-                               ' Try this search: <a id="' + settings.suggestLinkId + '" href="' + newSearchURL + '">' + newSearchText + '</a>.</div>';
-        $(settings.afterSelector).after(suggestContainer);
-      }
-    }    
+      var newSearchURL = window.location.pathname + '?' + encodeURI(newPairs.join("&"));
+      var newSearchText = reformat.join(' ');
+      var suggestContainer = '<div class="boolhelp">To use Boolean operators like "and," "or," and "not", you\'ll need to capitalize them.' +
+                             ' Try this search: <a id="' + settings.suggestLinkId + '" href="' + newSearchURL + '">' + newSearchText + '</a>.</div>';
+      $(settings.afterSelector).after(suggestContainer);
+    }
+   
   }
 
   if (isPageSuggestable()){
