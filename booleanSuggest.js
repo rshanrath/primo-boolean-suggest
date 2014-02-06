@@ -6,7 +6,8 @@ var PrimoBooleanSuggest = function (options){
       'suggestLinkId' : 'BoolSuggestLink',
       'wrapperClass'  : 'BoolSuggest',
       'titleChars'    : [":", ".", ",", "?"],
-      'titleWords'    : ["of", "by", "on", "the", "in", "an", "a"]
+      'titleWords'    : ["of", "by", "on", "the", "in", "an", "a", "with", 
+                         "to", "for"]
     },
     options
   );
