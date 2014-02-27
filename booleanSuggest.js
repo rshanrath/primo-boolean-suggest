@@ -92,17 +92,17 @@ var PrimoBooleanSuggest = function (options){
     if (foundBool && ! foundTitleChar && ! foundTitleWord){
       var newPairs = new Array();
       for (var key in params){
-        if (key == 'vl(freeText0)'){
-          newPairs.push(key + "=" + reformat.join(' '));
+        if (key == 'vl%28freeText0%29'){
+          newPairs.push(key + "=" + encodeURI(reformat.join(' ')));
         }else if (key == 'query'){
           var qPieces = params[key].split(",");
-          newPairs.push(key + "=" + qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
+          newPairs.push(key + "=" + encodeURI(qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
         }else{
           newPairs.push(key + "=" + params[key]);
         }          
       } 
 
-      var newSearchURL = window.location.pathname + '?' + encodeURI(newPairs.join("&"));
+      var newSearchURL = window.location.pathname + '?' + newPairs.join("&");
       var newSearchText = reformat.join(' ');
       var suggestContainer = '<div class="boolhelp">To use Boolean operators like "and," "or," and "not", you\'ll need to capitalize them.' +
                              ' Try this search: <a id="' + settings.suggestLinkId + '" href="' + newSearchURL + '">' + newSearchText + '</a>.</div>';
