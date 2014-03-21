@@ -7,7 +7,8 @@ var PrimoBooleanSuggest = function (options){
       'wrapperClass'  : 'BoolSuggest',
       'titleChars'    : [":", ".", ",", "?"],
       'titleWords'    : ["of", "by", "on", "the", "in", "an", "a", "with", 
-                         "to", "for"]
+                         "to", "for", "what", "it", "it's"],
+      'termsToOperatorsThreshold' : 6 // max ratio of terms to operators to make suggestions
     },
     options
   );
@@ -69,6 +70,9 @@ var PrimoBooleanSuggest = function (options){
     var foundBool = false;
     var foundTitleChar = hasTitleChars(searchQuery);
 
+    var countBool = 0;
+    var countTerms = 0;
+
     var results = searchQuery.match(/("[^"]+"|[^"\s]+)/g);
     var reformat = [];
 
@@ -79,24 +83,31 @@ var PrimoBooleanSuggest = function (options){
         if (results[i] == "or" || results[i] == "not" || results[i] == "and"){
           reformat[i] = results[i].toUpperCase();
           foundBool = true;
+          countBool++
         }else{
-          if ($.inArray(results[i], settings.titleWords) >= 0){
+          if ($.inArray(results[i].toLowerCase(), settings.titleWords) >= 0){
             foundTitleWord = true;
           }
 
           reformat[i] = results[i];
+          countTerms++;
         }
       }
     }
 
-    if (foundBool && ! foundTitleChar && ! foundTitleWord){
+    var termsToOperators = 1;
+    if (countBool > 0){
+      termsToOperators = countTerms / countBool;
+    }
+
+    if (foundBool && ! foundTitleChar && ! foundTitleWord && termsToOperators <= settings.termsToOperatorsThreshold){
       var newPairs = new Array();
       for (var key in params){
         if (key == 'vl%28freeText0%29'){
           newPairs.push(key + "=" + encodeURI(reformat.join(' ')));
         }else if (key == 'query'){
           var qPieces = params[key].split(",");
-          newPairs.push(key + "=" + encodeURI(qPieces[0] + "," + qPieces[1] + "," + reformat.join(' '));
+          newPairs.push(key + "=" + encodeURI(qPieces[0] + "," + qPieces[1] + "," + reformat.join(' ')));
         }else{
           newPairs.push(key + "=" + params[key]);
         }          
