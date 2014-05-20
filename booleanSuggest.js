@@ -44,7 +44,8 @@ var PrimoBooleanSuggest = function (options){
     //  if there are no facets selected
     if ($('#exlidResultsContainer').length < 1 || 
        $('.EXLSystemFeedback strong').length > 0 ||
-       $('.EXLRefinementsList').length > 0){
+       $('.EXLRefinementsList').length > 0 ||
+       $('#exlidSearchTile').length < 1){
       return false;
     }
     var params = getPageParams();
