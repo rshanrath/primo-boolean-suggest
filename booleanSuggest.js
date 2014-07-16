@@ -42,7 +42,7 @@ var PrimoBooleanSuggest = function (options){
     // Only display Booelan Suggest if the page contains results,
     //  if there isn't already another system feedback box (e.g. for DYM),
     //  if there are no facets selected
-    if ($('#exlidResultsContainer').length < 1 || 
+    if ($('#exlidResultsTable').length < 1 || 
        $('.EXLSystemFeedback strong').length > 0 ||
        $('.EXLRefinementsList').length > 0 ||
        $('#exlidSearchTile').length < 1){
